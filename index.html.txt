@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地段資訊查詢</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <div class="max-w-4xl mx-auto bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-center text-gray-900 mb-2">地段資訊查詢</h1>
+        <p class="text-center text-gray-500 mb-6">輸入編號或地段名稱進行搜尋</p>
+
+        <div class="mb-6">
+            <input type="text" id="searchInput" placeholder="搜尋..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+        </div>
+
+        <div class="overflow-x-auto rounded-lg shadow-md">
+            <table class="min-w-full bg-white border-collapse">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">編號</th>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">地段名稱</th>
+                    </tr>
+                </thead>
+                <tbody id="landTableBody" class="divide-y divide-gray-200">
+                    <!-- Data will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const data = [
+            ["0001", "東門段一小段"],
+            ["0002", "東門段二小段"],
+            ["0003", "東門段三小段"],
+            ["0004", "東門段四小段"],
+            ["0005", "東門段五小段"],
+            ["0006", "東門段六小段"],
+            ["0007", "東門段七小段"],
+            ["0008", "東門段八小段"],
+            ["0009", "中山段一小段"],
+            ["0010", "中山段二小段"],
+            ["0011", "中山段三小段"],
+            ["0012", "中山段四小段"],
+            ["0013", "中山段五小段"],
+            ["0014", "中山段六小段"],
+            ["0015", "中山段七小段"],
+            ["0017", "山下段"],
+            ["0018", "台斗坑段"],
+            ["0019", "蘆厝段"],
+            ["0022", "彌陀段"],
+            ["0023", "長竹段"],
+            ["0024", "東川段"],
+            ["0025", "短竹段"],
+            ["0027", "西門段一小段"],
+            ["0028", "西門段二小段"],
+            ["0029", "西門段三小段"],
+            ["0030", "西門段四小段"],
+            ["0031", "西門段五小段"],
+            ["0032", "西門段六小段"],
+            ["0033", "西門段七小段"],
+            ["0034", "西門段八小段"],
+            ["0035", "西門段九小段"],
+            ["0036", "榮段一小段"],
+            ["0037", "榮段二小段"],
+            ["0038", "榮段三小段"],
+            ["0039", "榮段四小段"],
+            ["0040", "榮段五小段"],
+            ["0041", "榮段六小段"],
+            ["0042", "榮段七小段"],
+            ["0043", "新富段一小段"],
+            ["0044", "新富段二小段"],
+            ["0045", "新富段三小段"],
+            ["0046", "新富段四小段"],
+            ["0047", "新富段五小段"],
+            ["0048", "新富段六小段"],
+            ["0049", "新富段七小段"],
+            ["0050", "新富段八小段"],
+            ["0051", "末廣段一小段"],
+            ["0052", "末廣段二小段"],
+            ["0053", "末廣段三小段"],
+            ["0054", "末廣段四小段"],
+            ["0055", "末廣段五小段"],
+            ["0056", "車店段"],
+            ["0057", "車店段車店小段"],
+            ["0058", "大溪厝段"],
+            ["0059", "黑金段"],
+            ["0060", "白川段"],
+            ["0061", "港子坪段"],
+            ["0063", "劉厝段"],
+            ["0064", "劉厝段劉厝小段"],
+            ["0065", "南門段一小段"],
+            ["0066", "南門段二小段"],
+            ["0067", "南門段三小段"],
+            ["0068", "南門段四小段"],
+            ["0069", "南門段五小段"],
+            ["0070", "南門段六小段"],
+            ["0071", "南門段七小段"],
+            ["0072", "民族段一小段"],
+            ["0073", "民族段二小段"],
+            ["0074", "民族段三小段"],
+            ["0075", "民族段四小段"],
+            ["0076", "民族段五小段"],
+            ["0077", "民族段六小段"],
+            ["0078", "元段一小段"],
+            ["0079", "元段二小段"],
+            ["0080", "元段三小段"],
+            ["0081", "元段四小段"],
+            ["0082", "元段五小段"],
+            ["0083", "元段六小段"],
+            ["0084", "元段七小段"],
+            ["0087", "下路頭段"],
+            ["0088", "湖子內段"],
+            ["0089", "湖子內段湖內小段"],
+            ["0090", "北門段一小段"],
+            ["0091", "北門段二小段"],
+            ["0092", "北門段三小段"],
+            ["0093", "北門段四小段"],
+            ["0094", "北門段五小段"],
+            ["0095", "北門段六小段"],
+            ["0096", "北門段七小段"],
+            ["0097", "檜段一小段"],
+            ["0098", "檜段二小段"],
+            ["0099", "檜段三小段"],
+            ["0100", "檜段四小段"],
+            ["0101", "檜段五小段"],
+            ["0102", "檜段六小段"],
+            ["0103", "檜段七小段"],
+            ["0105", "埤子頭段"],
+            ["0106", "埤子頭段新厝小段"],
+            ["0107", "竹圍子段"],
+            ["0108", "北社尾段"],
+            ["0109", "北社尾段保安小段"],
+            ["0110", "興村段"],
+            ["0111", "軍輝段"],
+            ["0112", "崎頂段"],
+            ["0113", "後庄段"],
+            ["0114", "頂庄段"],
+            ["0115", "中庄段"],
+            ["0116", "荖藤段"],
+            ["0117", "同興段"],
+            ["0118", "遠東段"],
+            ["0119", "湖東段"],
+            ["0120", "湖內段"],
+            ["0121", "新厝段"],
+            ["0122", "北園段"],
+            ["0123", "北湖段"],
+            ["0124", "港子坪段港坪小段"],
+            ["0125", "竹圍子段一小段"],
+            ["0126", "竹圍子段二小段"],
+            ["0127", "竹圍子段三小段"],
+            ["0128", "竹圍子段中興小段"],
+            ["0129", "竹圍子段友愛小段"],
+            ["0130", "烏岫段"],
+            ["0131", "竹村段"],
+            ["0132", "下埤段"],
+            ["0133", "大溪段"],
+            ["0134", "溪厝段"],
+            ["0135", "溪東段"],
+            ["0136", "育人段"],
+            ["0137", "何庄段"],
+            ["0138", "頭港段"],
+            ["0139", "盧東段"],
+            ["0140", "仁義段"],
+            ["0141", "蘭潭段"],
+            ["0142", "鹿寮段"],
+            ["0143", "八掌段"],
+            ["0144", "陳厝段"],
+            ["0145", "劉厝段玉山小段"],
+            ["0146", "彌陀段日新小段"],
+            ["0147", "興村段興村小段"],
+            ["0148", "湖子內段興安小段"],
+            ["0149", "湖子內段新民小段"],
+            ["0150", "湖子內段湖美小段"],
+            ["0151", "竹村段貨轉小段"],
+            ["0152", "新太平段"],
+            ["0153", "垂榕段"],
+            ["0154", "宣信段"],
+            ["0155", "南田段"],
+            ["0156", "導明段"],
+            ["0157", "崇文段"],
+            ["0158", "永安段"],
+            ["0159", "培元段"],
+            ["0160", "垂楊段"],
+            ["0161", "新白川段"],
+            ["0163", "新興段"],
+            ["0164", "興業段"],
+            ["0165", "草地尾段"],
+            ["0166", "芳安段"],
+            ["0167", "安寮段"],
+            ["0168", "頂寮段"],
+        ];
+
+        const tableBody = document.getElementById('landTableBody');
+        const searchInput = document.getElementById('searchInput');
+
+        function renderTable(filteredData) {
+            tableBody.innerHTML = '';
+            filteredData.forEach(([id, name]) => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50 transition duration-150 ease-in-out';
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${name}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function handleSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredData = data.filter(([id, name]) => 
+                id.includes(searchTerm) || name.includes(searchTerm)
+            );
+            renderTable(filteredData);
+        }
+
+        // Initial render
+        renderTable(data);
+
+        // Add event listener for search input
+        searchInput.addEventListener('keyup', handleSearch);
+    </script>
+</body>
+</html>
